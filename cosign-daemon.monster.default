@@ -1,0 +1,28 @@
+##
+## defaults for monster - cosign web single sign-on cookie monster
+##
+
+## Path to monster's configuration file
+#CONFIG_FILE=/etc/cosign/cosign.conf
+
+## hostname to replicate to
+#REPLICATION_HOST=
+
+## hard timeout for any login cookie (in seconds)
+#HARD_TIMEOUT=43200
+
+## timeout for removal of an idle login cookie (in seconds)
+#IDLE_CACHE_TIMEOUT=16200
+
+## how long monster should sleep between passes (in seconds)
+#TIMESTAMP_PUSHING_INTERVAL=120
+
+## how long to store logged out cookies in the database before they are
+## deleted (in seconds)
+#LOGGEDOUT_CACHE=7200
+
+## syslog-facilty to log messages to
+#SYSLOG_FACILITY=daemon
+
+## Which syslog-level to log messages at
+#SYSLOG_LEVEL=info

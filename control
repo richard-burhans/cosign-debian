@@ -1,0 +1,36 @@
+Source: cosign
+Section: misc
+Priority: optional
+Maintainer: BX Admin <admin@bx.psu.edu>
+Build-Depends: dh-autoreconf | debhelper (>= 9.20160403~), debhelper
+Standards-Version: 3.9.8
+Homepage: http://weblogin.org/
+
+Package: cosign-cgi
+Architecture: any
+Multi-Arch: foreign
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: cosign web single sign-on cgi
+ cosign-cgi
+
+Package: cosign-daemon
+Architecture: any
+Multi-Arch: foreign
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: cosign web single sign-on daemon
+ cosign-daemon
+
+Package: cosign-docs
+Section: doc
+Architecture: all
+Multi-Arch: foreign
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: cosign web single sign-on documentation
+ cosign-docs
+
+Package: libapache2-mod-cosign
+Architecture: any
+Multi-Arch: foreign
+Depends: apache2-api-20120211, ${shlibs:Depends}, ${misc:Depends}
+Description: cosign web single sign-on filter
+ cosign-filter

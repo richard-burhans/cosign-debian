@@ -1,0 +1,5 @@
+etc/cosign/CA
+usr/sbin
+usr/share/man/man8
+var/lib/cosign/daemon
+var/lib/cosign/ticket

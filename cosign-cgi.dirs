@@ -1,0 +1,8 @@
+etc/cosign/CA
+etc/cosign/cgi-ssl
+etc/cosign/html
+etc/cosign/html/images
+etc/cosign/html/js
+etc/cosign/services
+etc/cosign/templates
+var/cosign/ticket-cgi

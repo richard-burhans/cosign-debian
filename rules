@@ -1,0 +1,51 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE = 1
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+export DEB_CFLAGS_MAINT_APPEND  = -W -Wall -Wextra -pedantic
+# package maintainers to append LDFLAGS
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+#		KRB_LIBS="-lkrb5 -lcom_err" \
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		KRB_CFLAGS="-I/usr/include/heimdal" \
+		KRB_LDFLAGS="-L/usr/lib/x86_64-linux-gnu/heimdal" \
+		KRB_LIBS="-lkrb5" \
+		GSS_LIBS="-lgssapi" \
+		--enable-apache2=/usr/bin/apxs \
+		--enable-krb \
+		--with-gss \
+		--with-krb_name_cosignname \
+		--disable-ap_req_nofail \
+		--with-cgiroot=/etc/cosign \
+		--with-cosigndb=/var/lib/cosign/daemon \
+		--with-filterdb=/var/lib/cosign/filter \
+		--with-proxydb=/var/lib/cosign/proxy \
+		--with-ticketcache=/var/lib/cosign/ticket \
+		--with-cosignconf=/etc/cosign/cosign.conf \
+		--with-cosigncadir=/etc/cosign/CA \
+		--with-cosigncert=/etc/cosign/cosign_cert.pem \
+		--with-cosignkey=/etc/cosign/cosign_key.pem
+
+override_dh_auto_build:
+	dh_auto_build -- everything
+
+override_dh_auto_install:
+	dh_auto_install -- install-all
+
+override_dh_installinit:
+	dh_installinit --no-start --name=cosignd
+	dh_installinit --no-start --name=monster
+

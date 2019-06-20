@@ -1,0 +1,17 @@
+#!/bin/sh
+
+USER="www-data"
+GROUP="root"
+MODE="0700"
+
+getent passwd "$USER" > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    chown "$USER" /var/lib/cosign/filter /var/lib/cosign/ticket
+fi
+
+getent group "$GROUP" > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    chgrp "$GROUP" /var/lib/cosign/filter /var/lib/cosign/ticket
+fi
+
+chmod $MODE /var/lib/cosign/filter /var/lib/cosign/ticket

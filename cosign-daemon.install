@@ -1,0 +1,4 @@
+usr/sbin/cosignd
+usr/sbin/monster
+usr/share/man/man8/cosignd.8
+usr/share/man/man8/monster.8

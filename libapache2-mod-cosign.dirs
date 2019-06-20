@@ -1,0 +1,4 @@
+etc/apache2/mods-available
+usr/lib/apache2/modules
+var/lib/cosign/filter
+var/lib/cosign/ticket

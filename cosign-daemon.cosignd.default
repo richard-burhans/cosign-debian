@@ -1,0 +1,25 @@
+##
+## defaults for cosignd - cosign web single sign-on daemon
+##
+
+## path to cosignd's configuration file
+#CONFIG_FILE=/etc/cosign/cosign.conf
+
+## hostname to replicate to
+#REPLICATION_HOSTNAME=
+
+## maximum queue of pending connections to listen(2)
+#BACKLOG=5
+
+## grey window for replication and idle logout (in seconds)
+#GREY_WINDOW=1800
+
+## idle timeout after which an unused cookie will be eligible for idle
+## logout (in seconds)
+#IDLE_TIMEOUT=7200
+
+## syslog-facilty to log messages to
+#SYSLOG_FACILITY=daemon
+
+## Which syslog-level to log messages at
+#SYSLOG_LEVEL=info

@@ -1,0 +1,15 @@
+cosign (3.2.0-3) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- BX Admin <admin@bx.psu.edu>  Thu, 13 Jun 2019 15:41:43 +0000
+cosign (3.2.0-2) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- BX Admin <admin@bx.psu.edu>  Thu, 13 Jun 2019 15:41:43 +0000
+cosign (3.2.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- BX Admin <admin@bx.psu.edu>  Thu, 13 Jun 2019 15:41:43 +0000

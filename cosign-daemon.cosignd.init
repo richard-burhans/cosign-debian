@@ -1,0 +1,145 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          cosignd
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: cosign web single sign-on daemon
+# Description:       Starts, stops, or restarts the cosign web single
+#                    sign-on daemon.  This daemon manages SSO login
+#                    sessions and service cookies for clients.
+### END INIT INFO
+
+add_arg () {
+    local arg_var=$1
+    local var=$2
+    local flag=$3
+    local default=$4
+    local arg_val
+
+    eval arg_val="\$$arg_var"
+    eval var_val="\$$var"
+
+    if [ \( -n "${var_val:+x}" \) -a \( "${var_val}" != "${default}" \) ]; then
+        if [ ${arg_val:+x} ]; then
+            eval "$arg_var=\"$arg_val $flag $var_val\""
+        else
+            eval "$arg_var=\"$flag $var_val\""
+        fi
+    fi
+}
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DESC="cosign daemon"
+NAME=cosignd
+DAEMON=/usr/sbin/$NAME
+DAEMON_ARGS=""
+SCRIPTNAME=/etc/init.d/$NAME
+
+# Exit if the package is not installed
+[ -x $DAEMON ] || exit 0
+
+# Read configuration if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+add_arg DAEMON_ARGS CONFIG_FILE          -c /etc/cosign/cosign.conf
+add_arg DAEMON_ARGS REPLICATION_HOSTNAME -h ""
+add_arg DAEMON_ARGS BACKLOG              -b 5
+add_arg DAEMON_ARGS GREY_WINDOW          -g 1800
+add_arg DAEMON_ARGS IDLE_TIMEOUT         -i 7200
+add_arg DAEMON_ARGS SYSLOG_FACILITY      -F daemon
+add_arg DAEMON_ARGS SYSLOG_LEVEL         -L info
+
+# Get the setting of VERBOSE and other rcS variables
+[ -r /etc/default/rcS ] && . /etc/default/rcS
+
+# Define LSB log functions
+. /lib/lsb/init-functions
+
+do_start_cosignd () {
+    start-stop-daemon --start --oknodo --quiet --exec $DAEMON \
+        --name $NAME -- $DAEMON_ARGS
+
+    return $?
+}
+
+do_stop_cosignd () {
+    start-stop-daemon --stop --oknodo --quiet --exec $DAEMON \
+        --name $NAME --retry=TERM/30/KILL/5
+
+    return $?
+}
+
+do_reload_cosignd () {
+    start-stop-daemon --stop --oknodo --quiet --exec $DAEMON \
+        --name $NAME --signal HUP 
+
+    return $?
+}
+
+case "$1" in
+    start)
+        [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+        do_start_cosignd
+
+        if [ $? -eq 0 ]; then
+            [ "$VERBOSE" != no ] && log_end_msg 0
+        else
+            [ "$VERBOSE" != no ] && log_end_msg 1
+        fi
+        ;;
+
+    stop)
+        [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+        do_stop_cosignd
+
+        if [ $? -eq 0 ]; then
+            [ "$VERBOSE" != no ] && log_end_msg 0
+        else
+            [ "$VERBOSE" != no ] && log_end_msg 1
+        fi
+        ;;
+
+    reload)
+        log_daemon_msg "Reloading $DESC" "$NAME"
+        do_reload_cosignd
+
+        if [ $? -eq 0 ]; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        do_stop_cosignd
+
+        if [ $? -eq 0 ]; then
+            do_start_cosignd
+
+            if [ $? -eq 0 ]; then
+                log_end_msg 0
+            else
+                log_end_msg 1
+            fi
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    status)
+        ret=0
+        status_of_proc $DAEMON $NAME 2>/dev/null || ret=$?
+        exit $ret
+        ;;
+
+    *)
+        log_action_msg "Usage: $SCRIPTNAME {start|stop|reload|restart|force-reload|status}"
+        exit 1
+        ;;
+esac
+
+exit 0

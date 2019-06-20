@@ -1,0 +1,2 @@
+usr/lib/apache2/modules/mod_cosign.so
+etc/apache2/mods-available/cosign.load
