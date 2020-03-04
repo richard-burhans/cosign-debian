@@ -24,11 +24,12 @@ Package: cosign-docs
 Section: doc
 Architecture: all
 Multi-Arch: foreign
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}
 Description: cosign web single sign-on documentation
  cosign-docs
 
 Package: libapache2-mod-cosign
+Section: httpd
 Architecture: any
 Multi-Arch: foreign
 Depends: apache2-api-20120211, ${shlibs:Depends}, ${misc:Depends}
