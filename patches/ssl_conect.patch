@@ -1,0 +1,68 @@
+--- a/cgi/network.c
++++ b/cgi/network.c
+@@ -639,6 +639,14 @@
+         tv = timeout;
+         if (( line = snet_getline_multi( conn->conn_sn, logger, &tv ))
+ 		== NULL ) {
++#ifdef HAVE_LIBSSL
++            if (conn->conn_sn->sn_flag & SNET_SSL_READ_ERROR ) {
++            fprintf( stderr, "snet_starttls: %s\n",
++                ERR_error_string( ERR_get_error(), NULL ));
++            err = -2;
++            goto done;
++            }
++#endif /* HAVE_LIBSSL */
+             fprintf( stderr, "connect_sn: snet_getline_multi failed" );
+             goto done;
+         }
+--- a/libsnet/snet.c
++++ b/libsnet/snet.c
+@@ -23,6 +23,7 @@
+ 
+ #ifdef HAVE_LIBSSL
+ #include <openssl/ssl.h>
++#include <openssl/err.h>
+ #endif /* HAVE_LIBSSL */
+ 
+ #ifdef HAVE_LIBSASL
+@@ -679,7 +680,14 @@
+ 	 * and SSL_MODE_AUTO_RETRY for possible ways to deal with these
+ 	 * differences in call semantics.
+ 	 */
++	ERR_clear_error();
++	sn->sn_flag &= ~SNET_SSL_READ_ERROR;
+ 	rc = SSL_read( sn->sn_ssl, buf, len );
++	if (rc <= 0) {
++	if ( SSL_get_error( sn->sn_ssl, rc ) == SSL_ERROR_SSL ) {
++	sn->sn_flag |= SNET_SSL_READ_ERROR;
++    }
++	}
+ #else /* HAVE_LIBSSL */
+ 	rc = -1;
+ #endif /* HAVE_LIBSSL */
+@@ -687,7 +695,13 @@
+ 	rc = read( snet_fd( sn ), buf, len );
+     }
+     if ( rc == 0 ) {
++#ifdef HAVE_LIBSSL
++    if ( sn->sn_flag & SNET_TLS ) {
++	sn->sn_flag = SNET_EOF | SNET_SSL_READ_ERROR;
++    }
++#else /* HAVE_LIBSSL */
+ 	sn->sn_flag = SNET_EOF;
++#endif /* HAVE_LIBSSL */
+     }
+ 
+ #ifdef HAVE_LIBSASL
+--- a/libsnet/snet.h
++++ b/libsnet/snet.h
+@@ -40,6 +40,9 @@
+ #endif /* HAVE_LIBSASL */
+ #define SNET_WRITE_TIMEOUT	(1<<3)
+ #define SNET_READ_TIMEOUT	(1<<4)
++#ifdef HAVE_LIBSSL
++#define SNET_SSL_READ_ERROR	(1<<5)
++#endif /* HAVE_LIBSSL */
+ 
+ #define snet_fd( sn )	((sn)->sn_fd)
+ #define snet_saslssf( sn )	((sn)->sn_saslssf)

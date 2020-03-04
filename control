@@ -32,6 +32,6 @@ Package: libapache2-mod-cosign
 Section: httpd
 Architecture: any
 Multi-Arch: foreign
-Depends: apache2-api-20120211, ${shlibs:Depends}, ${misc:Depends}
+Depends: apache2-api-20120211-openssl1.1, apache2-api-20120211, ${shlibs:Depends}, ${misc:Depends}
 Description: cosign web single sign-on filter
  cosign-filter
