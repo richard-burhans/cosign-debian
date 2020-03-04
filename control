@@ -20,13 +20,13 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: cosign web single sign-on daemon
  cosign-daemon
 
-Package: cosign-docs
+Package: cosign-doc
 Section: doc
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
 Description: cosign web single sign-on documentation
- cosign-docs
+ cosign-doc
 
 Package: libapache2-mod-cosign
 Section: httpd
